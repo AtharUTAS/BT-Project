@@ -6,7 +6,7 @@ import axios from "axios";
 export const logout = createAsyncThunk(
   "users/logout",
   async()=>{
-      const response = await axios.post("http://localhost:5000/logout")
+      const response = await axios.post(`${process.env.REACT_APP_SERVER_URL}/logout`)
       const msg  = response.data.msg
       console.log(msg)
 })
@@ -16,7 +16,7 @@ export const login = createAsyncThunk(
    async(userData,{rejectWithValue})=>{
   try{
     const {email,password} = userData
-    const response = await axios.post("http://localhost:5000/login",{email,password})
+    const response = await axios.post(`${process.env.REACT_APP_SERVER_URL}/login`,{email,password})
     const user = response.data.user
     const msg = response.data.msg
     return {user,msg}

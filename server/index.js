@@ -133,6 +133,3 @@ app.listen(3001,()=>
     {
         console.log("server connected with db")
     })
-
-
-//const constr="mongodb+srv://admin:admin@postitcluster.zn0eeva.mongodb.net/Project?appName=PostITCluster"
