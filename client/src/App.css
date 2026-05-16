@@ -1,246 +1,753 @@
-a {
-  text-decoration: none;
-}
-a:link {
-  color: rgb(255, 200, 0);
+/* ===============================
+   Welcome Page
+   =============================== */
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
 }
 
-/* visited link */
-a:visited {
-  color: green;
+.welcome-page {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;   /* أفقي */
+
+  
+}
+.welcome-page2 {
+  overflow-x: hidden;
+  min-height: 100vh;
+  background: url('./Images/BB.jpeg') no-repeat center center fixed;
+  background-size: cover;
+  font-family: Arial, sans-serif;
+  
 }
 
-/* mouse over link */
-a:hover {
-  color: hotpink;
-}
 
-.login {
-  align-items: center;
-  justify-content: center;
-}
-.div-form {
-  border-style: solid;
-  border-width: thin;
-  font-size: 24px;
-  padding-left: 50px;
-  padding-right: 50px;
-  padding-bottom: 10px;
-  padding-top: 10px;
-  background-color: rgb(252, 252, 252);
-  border-radius: 10px;
+/* ===============================
+   Navbar
+   =============================== */
+
+.navbar{
   width: 100%;
-  height: 100%;
-  border-color: #a6d49f;
-  margin-top: 10px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px 50px;
+}
+.navbar2{
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px 50px;
+}
+
+/* الشعار */
+
+.logo {
+  font-size: 24px;
+  font-weight: bold;
+  color: rgb(0, 0, 0);
+  margin-left: 20px;
+}
+
+
+/* ===============================
+   صندوق المحتوى
+   =============================== */
+
+.page {
+  max-width: 500px;
+  margin: auto;
+  padding: 40px;
+  border-radius: 15px;
+  color: black;
+  text-align: center;
+}
+
+
+/* العناوين */
+
+.page h1 {
+  font-size: 36px;
+  margin-bottom: 15px;
+}
+
+.page h2 {
+  font-size: 22px;
+  margin-bottom: 20px;
+}
+
+.page p {
+  font-size: 16px;
+  line-height: 1.6;
+  margin-bottom: 25px;
+}
+
+
+/* ===============================
+   الأزرار
+   =============================== */
+
+.buttons {
+  display: flex;
+  gap: 15px;
+}
+
+.buttons button {
+  border: none;
+  padding: 12px 22px;
+  border-radius: 8px;
+  font-size: 16px;
+  cursor: pointer;
+  font-weight: bold;
+  transition: 0.3s;
+}
+
+/* زر Create Account */
+
+.orange-btn {
+  background: orange;
+  color: white;
+}
+
+.orange-btn:hover {
+  opacity: 0.9;
+  transform: translateY(-2px);
+}
+
+/* زر Login */
+
+.blue-btn {
+  background: #4338ca;
+  color: white;
+}
+
+.blue-btn:hover {
+  opacity: 0.9;
+  transform: translateY(-2px);
+}
+
+
+/* ===============================
+   Responsive
+   =============================== */
+
+@media (max-width: 768px) {
+
+  .navbar {
+    flex-direction: column;
+    gap: 10px;
+  }
+  .navbar2 {
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .page {
+    width: 90%;
+    margin: 100px auto;
+  }
+
+  .buttons {
+    flex-direction: column;
+  }
+
+}
+/* ===============================
+   Signup Container
+   =============================== */
+
+.signup-container{
+  width: 420px;
+  margin: 70px auto;
+  padding: 40px;
+
+  background: rgba(255,255,255,0.2);
+  backdrop-filter: blur(10px);
+
+  border-radius: 15px;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+
+  text-align: center;
+}
+
+.signup-container h2{
+  font-size: 28px;
   margin-bottom: 10px;
 }
 
-.login-form input {
-  margin: 2px;
-}
-.smalltext {
+.signup-subtitle{
   font-size: 14px;
+  margin-bottom: 25px;
+  color: #333;
+}
+
+
+/* ===============================
+   Form
+   =============================== */
+
+.signup-form{
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.signup-form label{
+  text-align: left;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.signup-form input{
+  padding: 12px;
+  border-radius: 8px;
+  border: none;
+  outline: none;
+  font-size: 14px;
+}
+
+
+/* ===============================
+   Button
+   =============================== */
+
+.signup-btn{
+  margin-top: 15px;
+  padding: 12px;
+
+  background: orange;
+  color: white;
+
+  border: none;
+  border-radius: 8px;
+
+  font-size: 16px;
   font-weight: bold;
-  color: #522a27;
+
+  cursor: pointer;
+  transition: 0.3s;
 }
 
-.columndiv1 {
-  border-color: #a6d49f;
-  font-size: xx-large;
-  background-color: rgb(252, 252, 252);
-  height: auto;
+.signup-btn:hover{
+  transform: translateY(-2px);
+  opacity: 0.9;
+}
+
+
+/* ===============================
+   Login Text
+   =============================== */
+
+.login-text{
+  margin-top: 20px;
+  font-size: 14px;
+}
+
+.login-text span{
+  color: #4338ca;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.login-text span:hover{
+  text-decoration: underline;
+}
+/*========== feedback ===============*/
+.feedback-center {
   display: flex;
-  align-items: center;
   justify-content: center;
-}
-.columndiv2 {
-  border-color: rgb(182, 179, 176);
-  font-size: xx-large;
-  height: auto;
-  padding: 20px;
-  /*   background-image: url("http://localhost:3000/image1.jpg");
-  background-size: cover;
-  background-repeat: no-repeat; */
+  align-items: center;
+  flex-direction: column;
+  margin-top: 40px;
 }
 
-.loginImage {
-  height: 100%;
+.feedback-card {
+  width: 450px;
+  padding: 25px;
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(12px);
+  border-radius: 20px;
+  color: white;
+  text-align: center;
+}
+
+/* textarea */
+textarea {
   width: 100%;
-}
-.appTitle {
-  text-align: center;
-  color: #c73e1d;
-}
-.formrow {
-  background-color: #f5f2f2;
-  padding: 50px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.side {
-  display: flex;
-  vertical-align: top;
-}
-.checkbox {
-  width: 25px;
-  height: 25px;
-}
-.button {
-  text-align: center;
+  height: 120px;
+  margin-top: 15px;
   padding: 10px;
-  width: 100%;
-  background-color: #c59849;
-  border-style: none;
-}
-body {
-  font-family: "Roboto", sans-serif;
-  margin: 10;
-  margin-left: 10px;
-}
-.navigation {
-  background-color: #9cb380;
-  height: 75px;
-  font-weight: bolder;
-  color: #522a27;
-}
-.footer {
-  display: flex;
-  background-color: #9cb380;
-  height: 100px;
-  color: #522a27;
-  justify-content: center;
-  align-items: center;
-  font-weight: bolder;
-  flex-shrink: 0;
-}
-.socialmedia {
-  width: 100px;
-  height: 100px;
+  border-radius: 10px;
+  border: none;
+  outline: none;
+  resize: none;
 }
 
-.userImage {
-  width: 100px;
-  height: 100px;
-  border-radius: 50%;
+/* Grid for admin */
+.feedback-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 15px;
+  margin-top: 20px;
 }
-.userInfos {
-  padding: 20px;
+
+/* Card */
+.feedback-item {
+  background: rgba(255, 255, 255, 0.12);
+  padding: 15px;
+  border-radius: 15px;
+  text-align: left;
+}
+
+.fb-message {
+  margin-bottom: 10px;
+}
+
+.fb-footer {
+  display: flex;
+  justify-content: space-between;
+  font-size: 12px;
+  color: #ccc;
+}
+/* ===============================
+   صفحة Welcome / Login / Signup
+   الخلفية تكيفية لجميع الأجهزة
+   =============================== */
+
+html, body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  font-family: Arial, sans-serif;
+  background: url('./Images/A.png') no-repeat center center fixed;
+  background-size: cover;
+}
+
+/* Navbar */
+.navbar{
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px 50px;
+}
+
+
+.nav-links {
+  display: flex;
+  gap: 25px;
+  
+}
+
+.nav-links span {
+  color: rgb(0, 0, 0);
+  font-size: 16px;
+  font-weight: 500;
+  cursor: pointer;
+  margin-right: 30px; /* تحريك قليلاً لليمين */
+  transition: 0.3s;
+}
+
+.nav-links span:hover {
+  color: orange;
+}
+/*------------*/
+
+.nav-links2 {
+  display: flex;
+  gap: 25px;
+  
+}
+
+.nav-links2 span {
+  color: orange;
+  font-size: 16px;
+  font-weight: 500;
+  cursor: pointer;
+  margin-right: 30px; /* تحريك قليلاً لليمين */
+  transition: 0.3s;
+}
+
+
+.nav-links2 span:hover {
+  color: rgb(255, 255, 255);
+}
+
+/* ===============================
+   Login / Signup Card
+   =============================== */
+
+.login-container {
+  width: 400px;
+  margin: 80px auto;
+  padding: 40px;
+  background: rgba(255,255,255,0.2);
+  backdrop-filter: blur(10px);
+  border-radius: 15px;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.2);
   text-align: center;
 }
 
-.page {
+.login-container h2 {
+  font-size: 28px;
+  margin-bottom: 10px;
+}
+
+.login-subtitle {
+  font-size: 14px;
+  margin-bottom: 25px;
+  color: #333;
+}
+
+/* ===============================
+   Form
+   =============================== */
+
+.login-form {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.login-form label {
+  text-align: left;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.login-form input {
+  padding: 12px;
+  border-radius: 8px;
+  border: none;
+  outline: none;
+  font-size: 14px;
+}
+
+/* ===============================
+   Buttons
+   =============================== */
+
+.login-btn {
+  margin-top: 15px;
+  padding: 12px;
+  background: #4338ca;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.login-btn:hover {
+  opacity: 0.9;
+  transform: translateY(-2px);
+}
+
+/* ===============================
+   Signup Link
+   =============================== */
+
+.signup-text {
+  margin-top: 20px;
+  font-size: 14px;
+}
+
+.signup-text span {
+  color: orange;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.signup-text span:hover {
+  text-decoration: underline;
+}
+
+/* ===============================
+   Responsive
+   =============================== */
+
+@media (max-width: 768px) {
+  .navbar {
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .login-container {
+    width: 90%;
+    margin: 50px auto;
+  }
+}
+
+/* ===============================
+   Quiz Options
+   =============================== */
+
+.quiz-options {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  margin-bottom: 25px;
+}
+
+.option {
+  padding: 12px 15px;
+  border-radius: 10px;
+  background: rgba(255,255,255,0.3);
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-weight: 500;
+}
+
+.option:hover {
+  background: rgba(255,165,0,0.7);
+  color: white;
+  transform: translateY(-2px);
+}
+
+.option.selected {
+  background: orange;
+  color: white;
+}
+
+/* ===============================
+   Next Button
+   =============================== */
+
+.buttons .blue-btn {
+  background: #4338ca;
+  color: white;
+  padding: 12px 25px;
+  border-radius: 8px;
+  font-size: 16px;
+  font-weight: bold;
+  border: none;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.buttons {
+  display: flex;
+  justify-content: center; /* 👈 يوسّطهم أفقيًا */
+  gap: 15px;
+  margin-top: 20px;
+}
+
+.buttons .blue-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* ===============================
+   Responsive
+   =============================== */
+
+@media (max-width: 768px) {
+  .quiz-container {
+    width: 90%;
+    margin: 50px auto;
+  }
+
+  .quiz-options {
+    gap: 12px;
+  }
+}
+
+/* ===============================
+   Global / Background
+   =============================== */
+html, body {
+  height: 100%;
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background: url('./Images/A.png') no-repeat center center fixed;
+  background-size: cover;
+}
+
+/* ===============================
+   Quiz / Login / Signup Container
+   =============================== */
+.quiz-container,
+.login-container,
+.signup-container {
+  width: 450px;
+  margin: 20px auto;
+  padding: 40px;
+  background: rgba(255,255,255,0.2);
+  backdrop-filter: blur(10px);
+  border-radius: 15px;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+  text-align: center;
+}
+
+/* Headings */
+.quiz-container h2,
+.login-container h2,
+.signup-container h2,
+.processing-container h2 {
+  font-size: 28px;
+  margin-bottom: 15px;
+}
+
+/* Quiz Options */
+.quiz-options {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  margin-bottom: 25px;
+}
+
+.option {
+  padding: 12px 15px;
+  border-radius: 10px;
+  background: rgba(255,255,255,0.3);
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-weight: 500;
+}
+
+.option:hover {
+  background: rgba(255,165,0,0.7);
+  color: white;
+  transform: translateY(-2px);
+}
+
+.option.selected {
+  background: orange;
+  color: white;
+}
+
+/* ===============================
+   Buttons
+   =============================== */
+.buttons .blue-btn,
+.login-btn,
+.signup-btn {
+  padding: 12px 25px;
+  border-radius: 8px;
+  font-size: 16px;
+  font-weight: bold;
+  border: none;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.buttons .blue-btn {
+  background: #4338ca;
+  color: white;
+}
+
+.buttons .blue-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.buttons .blue-btn:hover:enabled {
+  transform: translateY(-2px);
+  opacity: 0.9;
+}
+
+/* ===============================
+   Processing Page
+   =============================== */
+.processing-container {
+  width: 400px;
+  margin: 120px auto;
+  padding: 40px;
+  background: rgba(255,255,255,0.2);
+  backdrop-filter: blur(10px);
+  border-radius: 15px;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+  text-align: center;
+}
+
+.loader {
+  margin: 25px auto 0;
+  border: 5px solid #f3f3f3;
+  border-top: 5px solid orange;
+  border-radius: 50%;
+  width: 50px;
+  height: 50px;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* ===============================
+   Responsive
+   =============================== */
+@media (max-width: 768px) {
+  .quiz-container,
+  .login-container,
+  .signup-container,
+  .processing-container {
+    width: 90%;
+    margin: 50px auto;
+  }
+
+  .quiz-options {
+    gap: 12px;
+  }
+
+  .navbar {
+    flex-direction: column;
+    gap: 10px;
+  }
+}
+
+html, body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  font-family: Arial, sans-serif;
+
+  background: url('./Images/A.png') no-repeat center center fixed;
+  background-size: cover;
+
   display: flex;
   flex-direction: column;
   min-height: 100vh;
 }
 
-.main {
-  flex-grow: 1;
-  min-height: 300px;
-}
-.sharePosts {
-  padding-top: 10px;
-  height: 200px;
-  border-style: solid;
-  border-width: thin;
-  margin-top: 10px;
-  border-color: #a6d49f;
-  text-align: center;
-}
-.inputPost {
-  margin-right: 10px;
-  width: 80%;
-  border-color: #522a27;
-}
-.input-button-container {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-.postButton {
-  background-color: #522a27;
-}
-.dept {
-  display: flex;
-  flex-direction: row;
-  margin-top: 10px;
-}
-.selectDept .selectDept {
-  width: 10%;
-}
-.postUserImage {
-  width: 50px;
-  height: 50px;
-  margin: 10px;
+/*=============================
+==============================*/
+@media (max-width: 768px) {
+  .navbar {
+    flex-direction: column;
+    gap: 10px;
+    padding: 20px;
+  }
+
+  .nav-links {
+    justify-content: center;
+  }
+  .nav-links2 {
+    justify-content: center;
+  }
+
+  .page,
+  .page1,
+  .quiz-container,
+  .login-container,
+  .signup-container,
+  .processing-container {
+    width: 90%;
+    margin: 50px auto;
+  }
+
+  .quiz-options {
+    gap: 12px;
+  }
+
+  
 }
 
-.postsContainer {
-  display: flex;
-  flex-direction: column;
-}
-.post {
-  display: flex;
-  flex-direction: column;
-
-  height: auto;
-  width: 100%;
-}
-.postMsg {
-  padding: 20px;
-
-  border: 1px solid rgb(244, 241, 241);
-}
-.postedBy {
-  padding: 10px;
-  background-color: rgb(236, 238, 236);
-  border-radius: 10px;
-}
-.postByName {
-  font-weight: bolder;
-  font: optional;
-}
-.postDate {
-  margin-left: 5px;
-}
-.navs {
-  padding: 10px;
-}
-.userName {
-  font-weight: bold;
-}
-.likes {
-  padding: 5px;
-}
-
-.error {
-  color: red;
-  font-size: small;
-}
-.header {
-  display: flex;
-  align-items: center; /* Vertically align items */
-  padding: 10px;
-  background-color: #f8f9fa;
-}
-
-.nav {
-  display: flex;
-  align-items: center; /* Vertically align items */
-}
-
-.logo {
-  height: 50px; /* Adjust the logo size as needed */
-}
-
-.nav a {
-  text-decoration: none; /* Remove underline */
-  color: #000; /* Set text color */
-  margin: 0 15px; /* Add spacing between links */
-}
-
-.nav a:hover {
-  color: #007bff; /* Change color on hover (optional) */
-}

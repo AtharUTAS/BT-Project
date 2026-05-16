@@ -1,84 +1,173 @@
-import {
-  Container,
-  Row,
-  Col,
-} from "reactstrap";
+import React, { useState } from "react";
 
-import { useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { login } from "../Features/UserSlice";
-import { useNavigate } from "react-router-dom";
+function Login({ setPage, lang = "en", changeLang }) {
 
-const Login = () => {
-  const navigate = useNavigate();
-  const {user,msg,isLogin} = useSelector(state => state.users)
-  useEffect(()=>{
-     if(isLogin)
-      navigate("/")
-    else
-      navigate("/login")
-  },[isLogin])
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
 
-  //Retrieve the current value of the state and assign it to a variable.
-  //Create the state variables
-  
-  const [email, setemail] = useState("");
-  const [password, setpassword] = useState("");
-  const dispatch = useDispatch(); //every time we want to call an action, make an action happen
-  //declares a constant variable named navigate and assigns it the value returned by the useNavigate() hook
-  // Handle form submission
-  const loginHandler = () => {
-    const userData = {email,password}
-    dispatch(login(userData))
+  const texts = {
+    en: {
+      title: "Log In",
+      subtitle: "Enter your credentials to continue",
+      email: "Email",
+      password: "Password",
+      login: "Log In",
+      noAccount: "Don't have an account?",
+      create: "Create one",
+      feedbackAlert: "⚠️ You must login first to access Feedback"
+    },
+    ar: {
+      title: "تسجيل الدخول",
+      subtitle: "أدخل بياناتك للمتابعة",
+      email: "البريد الإلكتروني",
+      password: "كلمة المرور",
+      login: "تسجيل الدخول",
+      noAccount: "ليس لديك حساب؟",
+      create: "إنشاء حساب",
+      feedbackAlert: "⚠️ يجب تسجيل الدخول أولاً للوصول إلى التعليقات"
+    }
   };
 
- 
+  const handleLogin = async () => {
+    if (!email || !password) {
+      alert(lang === "en"
+        ? "Please enter email and password"
+        : "الرجاء إدخال البريد وكلمة المرور"
+      );
+      return;
+    }
+
+    try {
+      const response = await fetch("http://localhost:3001/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, password }),
+      });
+
+      let data;
+      try {
+        data = await response.json();
+      } catch {
+        data = {};
+      }
+
+      if (response.ok) {
+        alert(data.msg || (lang === "en" ? "Login successful" : "تم تسجيل الدخول بنجاح"));
+        localStorage.setItem("user", JSON.stringify(data.user));
+        setPage("welcome");
+      } else {
+        alert(data.msg || `Server returned status ${response.status}`);
+      }
+
+    } catch (error) {
+      console.error("Fetch error:", error);
+      alert(lang === "en"
+        ? "Error connecting to server"
+        : "خطأ في الاتصال بالسيرفر"
+      );
+    }
+  };
+
+  const user = JSON.parse(localStorage.getItem("user"));
+
+  const handleFeedbackClick = () => {
+    if (user) {
+      setPage("feedback");
+    } else {
+      alert(texts[lang].feedbackAlert);
+      setPage("login");
+    }
+  };
 
   return (
-    <Container fluid>
-      <Row>
-        <Col lg="6">
-          {/* Execute first the submitForm function and if validation is good execute the handleSubmit function */}
-          <form className="div-form">
-            <div className="appTitle"></div>
-            <section>
-              <div className="form-group">
-                <input
-                  type="text"
-                  className="form-control"
-                  id="email"
-                  placeholder="Enter your email..."
-                 onChange ={(e) => setemail(e.target.value)}
-               
-                />
-              </div>
-              <div className="form-group">
-                <input
-                  type="password"
-                  className="form-control"
-                  id="password"
-                  placeholder="Enter your password..."
-                  onChange ={(e) => setpassword(e.target.value)}
-                />
-              </div>
-             
-              <button type='button' onClick={()=>loginHandler()}  color="primary" className="button">
-                Sign In
-              </button>
-            </section>
-          </form>
-        </Col>
-        <Col className="columndiv2" lg="6"></Col>
-      </Row>
-      <Row>
-        <div>
-          <h3>Server Response: {msg} </h3>
-          
+    <div className="welcome-page2">
+
+      {/* Navbar */}
+      <div className="navbar2">
+        <div className="logo">Logo</div>
+
+        <div className="nav-links2">
+
+          <span onClick={() => setPage("welcome")}>
+            {lang === "en" ? "Welcome" : "الرئيسية"}
+          </span>
+
+          <span onClick={() => setPage("info")}>
+            {lang === "en" ? "Info" : "معلومات"}
+          </span>
+
+          <span onClick={handleFeedbackClick}>
+            {lang === "en" ? "Feedback" : "التعليقات"}
+          </span>
+
+          {user && user.email !== "A@gmail.com" && (
+         <span onClick={() => setPage("savedResult")}>
+            {lang === "en" ? "My Result" : "نتيجتي"}
+        </span>
+          )}
+
+          <span onClick={() => setPage("jobs")}>
+            {lang === "en" ? "Jobs" : "الوظائف"}
+          </span>
+
+          {/* 🌍 Language toggle */}
+          <span
+            onClick={changeLang}
+            style={{ cursor: "pointer", color: "orange" }}
+          >
+            {lang === "en" ? "AR" : "EN"}
+          </span>
+
         </div>
-      </Row>
-    
-    </Container>
+      </div>
+
+      {/* Login Card */}
+      <div className="login-container">
+
+        <h2>{texts[lang].title}</h2>
+
+        <p className="login-subtitle">
+          {texts[lang].subtitle}
+        </p>
+
+        <form className="login-form" onSubmit={(e) => e.preventDefault()}>
+
+          <label>{texts[lang].email}</label>
+          <input
+            type="email"
+            placeholder={texts[lang].email}
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+          />
+
+          <label>{texts[lang].password}</label>
+          <input
+            type="password"
+            placeholder={texts[lang].password}
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+          />
+
+          <button
+            type="button"
+            className="login-btn"
+            onClick={handleLogin}
+          >
+            {texts[lang].login}
+          </button>
+
+        </form>
+
+        <p className="signup-text">
+          {texts[lang].noAccount}{" "}
+          <span onClick={() => setPage("signup")}>
+            {texts[lang].create}
+          </span>
+        </p>
+
+      </div>
+    </div>
   );
-};
+}
 
 export default Login;
