@@ -1,107 +1,121 @@
 import React, { useEffect, useState } from "react";
 
-function SavedResult({ lang, changeLang, setPage }) {
+function SavedResult({ lang, setPage, changeLang }) {
 
   const [result, setResult] = useState(null);
-  const [loading, setLoading] = useState(true);
+
+  const user = JSON.parse(localStorage.getItem("user"));
 
   useEffect(() => {
-
-    const user = JSON.parse(localStorage.getItem("user"));
-
-    if (!user) {
-      setLoading(false);
-      return;
-    }
+    if (!user?.email) return;
 
     fetch(`http://localhost:3001/result/${user.email}`)
-      .then(async (res) => {
-
-        // إذا ما فيه response صالح
-        if (!res.ok) return null;
-
-        const text = await res.text();
-
-        // إذا فاضي
-        if (!text) return null;
-
-        return JSON.parse(text);
-      })
-      .then((data) => {
-        setResult(data);
-        setLoading(false);
-      })
-      .catch(() => {
-        setResult(null);
-        setLoading(false);
-      });
+      .then(res => res.json())
+      .then(data => setResult(data))
+      .catch(() => setResult(null));
 
   }, []);
 
-  const fieldNamesEN = {
-    software: "Software Engineering",
-    networking: "Networking",
-    cybersecurity: "Cybersecurity",
-    ai: "Artificial Intelligence",
-    database: "Database Systems"
+  const names = {
+    software: lang === "en" ? "Software Engineering" : "هندسة البرمجيات",
+    networking: lang === "en" ? "Networking" : "الشبكات",
+    cybersecurity: lang === "en" ? "Cybersecurity" : "الأمن السيبراني",
+    ai: lang === "en" ? "AI" : "الذكاء الاصطناعي",
+    database: lang === "en" ? "Database" : "قواعد البيانات"
   };
 
-  const fieldNamesAR = {
-    software: "هندسة البرمجيات",
-    networking: "الشبكات",
-    cybersecurity: "الأمن السيبراني",
-    ai: "الذكاء الاصطناعي",
-    database: "قواعد البيانات"
-  };
-
-  const fieldNames =
-    lang === "en" ? fieldNamesEN : fieldNamesAR;
+  const top3 = result?.percentages
+    ? Object.entries(result.percentages)
+        .sort((a, b) => b[1] - a[1])
+        .slice(0, 3)
+    : [];
 
   return (
     <div className="welcome-page2">
 
-      {/* NAVBAR */}
+      {/* ================= NAVBAR2 ================= */}
       <div className="navbar2">
-        <div className="logo">Logo</div>
+
+        <div className="logo"></div>
 
         <div className="nav-links2">
-          <span onClick={() => setPage("welcome")}>Welcome</span>
-          <span onClick={() => setPage("info")}>Info</span>
-          <span onClick={() => setPage("feedback")}>Feedback</span>
-          <span onClick={() => setPage("savedResult")}>My Result</span>
-          <span onClick={changeLang} style={{ color: "orange" }}>
+
+          <span onClick={() => setPage("welcome")}>
+            {lang === "en" ? "Home" : "الرئيسية"}
+          </span>
+
+          <span onClick={() => setPage("info")}>
+            {lang === "en" ? "Info" : "معلومات"}
+          </span>
+
+          <span onClick={() => setPage("feedback")}>
+            {lang === "en" ? "Feedback" : "التعليقات"}
+          </span>
+          
+          <span onClick={() => setPage("jobs")}>
+            {lang === "en" ? "Jobs" : "الوظائف"}
+          </span>
+
+          <span
+            onClick={changeLang}
+            style={{ cursor: "pointer", color: "orange" }}
+          >
             {lang === "en" ? "AR" : "EN"}
           </span>
+
         </div>
       </div>
 
-      {/* CONTENT */}
+      {/* ================= CONTENT ================= */}
       <div className="login-container">
 
-        {loading ? (
-          <h3>Loading...</h3>
-        ) : !result ? (
-          <h3>No saved result yet</h3>
+        <h2>
+          {lang === "en" ? "Saved Result" : "النتيجة المحفوظة"}
+        </h2>
+
+        {!result ? (
+          <h3>
+            {lang === "en"
+              ? "No saved result yet"
+              : "لا توجد نتيجة محفوظة"}
+          </h3>
         ) : (
           <>
-            <h2>Your Saved Result</h2>
-
             <h1 style={{ color: "orange" }}>
-              {fieldNames[result.bestField]}
+              {names[result.bestField] || result.bestField}
             </h1>
 
-            {result.percentages &&
-              Object.entries(result.percentages).map(([key, value]) => (
+            {/* TOP 3 */}
+            <div style={{ marginTop: "20px" }}>
+              {top3.map(([key, value]) => (
                 <p key={key}>
-                  {fieldNames[key]}: {value}%
+                  {names[key]}: {value}%
                 </p>
-              ))
-            }
+              ))}
+            </div>
           </>
         )}
 
-      </div>
+        {/* BUTTONS */}
+<div className="buttons" style={{ marginTop: "30px" }}>
 
+  <button
+    className="blue-btn"
+    onClick={() => setPage("welcome")}
+  >
+    {lang === "en" ? "Home" : "الرئيسية"}
+  </button>
+
+  <button
+    className="orange-btn"
+    onClick={() => setPage("quiz")}
+  >
+    {lang === "en" ? "Retake Quiz" : "إعادة الاختبار"}
+  </button>
+
+</div>
+
+      </div>
     </div>
   );
 }

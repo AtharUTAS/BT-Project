@@ -131,12 +131,16 @@ function Jobs({ setPage, lang, changeLang }) {
       {/* NAVBAR */}
       <div className="navbar2">
 
-        <div className="logo">Logo</div>
+        <div className="logo"></div>
 
         <div className="nav-links2">
 
           <span onClick={() => setPage("welcome")}>
             {texts[lang].welcome}
+          </span>
+
+          <span onClick={() => setPage("info")}>
+            {lang === "en" ? "Info" : "معلومات"}
           </span>
 
           <span onClick={() => setPage("feedback")}>
@@ -146,7 +150,7 @@ function Jobs({ setPage, lang, changeLang }) {
           {user && user.email !== "A@gmail.com" && (
          <span onClick={() => setPage("savedResult")}>
             {lang === "en" ? "My Result" : "نتيجتي"}
-        </span>
+         </span>
           )}
 
           <span

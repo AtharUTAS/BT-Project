@@ -4,10 +4,20 @@ function Feedback({ setPage, lang = "en", changeLang }) {
 
   const [message, setMessage] = useState("");
   const [feedbacks, setFeedbacks] = useState([]);
+  const [loading, setLoading] = useState(false);
 
-  const user = JSON.parse(localStorage.getItem("user"));
-  const isAdmin = user?.email === "A@gmail.com";
+  // ---------------- SAFE USER ----------------
+  let user = null;
 
+  try {
+    user = JSON.parse(localStorage.getItem("user"));
+  } catch {
+    user = null;
+  }
+
+  const isAdmin = user?.email?.toLowerCase() === "a@gmail.com";
+
+  // ---------------- TEXTS ----------------
   const texts = {
     en: {
       title: "Feedback",
@@ -16,6 +26,7 @@ function Feedback({ setPage, lang = "en", changeLang }) {
       hint: "Share your honest opinion 💡",
       submit: "Submit Feedback",
       adminTitle: "Users Feedback",
+      adminSubtitle: "All submitted feedback from users",
       noFeedback: "No feedback yet"
     },
     ar: {
@@ -25,17 +36,30 @@ function Feedback({ setPage, lang = "en", changeLang }) {
       hint: "شارك رأيك بصراحة 💡",
       submit: "إرسال",
       adminTitle: "تعليقات المستخدمين",
+      adminSubtitle: "جميع تعليقات المستخدمين",
       noFeedback: "لا توجد تعليقات"
     }
   };
 
+  // ---------------- FETCH ----------------
   const fetchFeedbacks = async () => {
+    setLoading(true);
     try {
       const res = await fetch("http://localhost:3001/feedback");
+
+      if (!res.ok) {
+        setFeedbacks([]);
+        return;
+      }
+
       const data = await res.json();
-      setFeedbacks(data);
+      setFeedbacks(Array.isArray(data) ? data : []);
+
     } catch (err) {
       console.log(err);
+      setFeedbacks([]);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -43,13 +67,18 @@ function Feedback({ setPage, lang = "en", changeLang }) {
     if (isAdmin) {
       fetchFeedbacks();
     }
-  }, []);
+  }, [isAdmin]);
 
+  // ---------------- SUBMIT ----------------
   const handleSubmit = async () => {
-    if (!message) return alert(lang === "en"
-      ? "Please write feedback"
-      : "الرجاء كتابة تعليق"
-    );
+
+    if (!message.trim()) {
+      return alert(
+        lang === "en"
+          ? "Please write feedback"
+          : "الرجاء كتابة تعليق"
+      );
+    }
 
     try {
       const res = await fetch("http://localhost:3001/feedback", {
@@ -61,28 +90,30 @@ function Feedback({ setPage, lang = "en", changeLang }) {
         }),
       });
 
-      const data = await res.json();
-
       if (res.ok) {
-        alert(lang === "en"
-          ? "Feedback sent successfully ✅"
-          : "تم إرسال التعليق بنجاح ✅"
+        alert(
+          lang === "en"
+            ? "Feedback sent successfully ✅"
+            : "تم إرسال التعليق بنجاح ✅"
         );
         setMessage("");
-      } else {
-        alert(data.msg);
+
+        // refresh for admin if needed
+        if (isAdmin) fetchFeedbacks();
       }
+
     } catch (err) {
       console.log(err);
     }
   };
 
+  // ---------------- UI ----------------
   return (
     <div className="welcome-page2">
 
-      {/* Navbar */}
+      {/* NAVBAR */}
       <div className="navbar2">
-        <div className="logo">IT Guide</div>
+        <div className="logo"></div>
 
         <div className="nav-links2">
 
@@ -95,16 +126,15 @@ function Feedback({ setPage, lang = "en", changeLang }) {
           </span>
 
           {user && user.email !== "A@gmail.com" && (
-         <span onClick={() => setPage("savedResult")}>
-            {lang === "en" ? "My Result" : "نتيجتي"}
-        </span>
+            <span onClick={() => setPage("savedResult")}>
+              {lang === "en" ? "My Result" : "نتيجتي"}
+            </span>
           )}
 
           <span onClick={() => setPage("jobs")}>
             {lang === "en" ? "Jobs" : "الوظائف"}
           </span>
 
-          {/* 🌍 Language toggle */}
           <span
             onClick={changeLang}
             style={{ cursor: "pointer", color: "orange" }}
@@ -115,14 +145,14 @@ function Feedback({ setPage, lang = "en", changeLang }) {
         </div>
       </div>
 
+      {/* CONTENT */}
       <div className="feedback-center">
 
-        {/* ================= USER ================= */}
+        {/* USER */}
         {!isAdmin && (
           <div className="feedback-card">
 
             <h2>{texts[lang].title}</h2>
-
             <p className="subtitle">{texts[lang].subtitle}</p>
 
             <textarea
@@ -140,35 +170,40 @@ function Feedback({ setPage, lang = "en", changeLang }) {
               </button>
 
             </div>
-
           </div>
         )}
 
-        {/* ================= ADMIN ================= */}
+        {/* ADMIN */}
         {isAdmin && (
           <div className="feedback-card">
 
             <h2>{texts[lang].adminTitle}</h2>
             <p className="subtitle">{texts[lang].adminSubtitle}</p>
 
-            {feedbacks.length === 0 ? (
+            {loading ? (
+              <p>Loading...</p>
+            ) : feedbacks.length === 0 ? (
               <p>{texts[lang].noFeedback}</p>
             ) : (
               <div className="feedback-grid">
+
                 {feedbacks.map((fb) => (
                   <div key={fb._id} className="feedback-item">
 
                     <p className="fb-message">{fb.message}</p>
 
                     <div className="fb-footer">
-                      <span>{fb.email}</span>
+                      <span>{fb.email || "unknown"}</span>
                       <small>
-                        {new Date(fb.createdAt).toLocaleString()}
+                        {fb.createdAt
+                          ? new Date(fb.createdAt).toLocaleString()
+                          : ""}
                       </small>
                     </div>
 
                   </div>
                 ))}
+
               </div>
             )}
 

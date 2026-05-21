@@ -1,197 +1,228 @@
-import React from "react";
+import React, { useState } from "react";
 
 function Result({ setPage, answers, questions, lang, changeLang }) {
 
-  const grades = {
-    software: 4,
-    networking: 3,
-    cybersecurity: 5,
-    ai: 4,
-    database: 3
+  const [saved, setSaved] = useState(false);
+
+  const user = JSON.parse(localStorage.getItem("user"));
+
+  const gradeMap = {
+    A: 5, B: 4, C: 3, D: 2, E: 1, F: 0
   };
 
-  const calculateInterest = (answers, questions) => {
-
-    let scores = {
-      software: 0,
-      networking: 0,
-      cybersecurity: 0,
-      ai: 0,
-      database: 0
-    };
-
-    answers.forEach((answer, index) => {
-
-      const field = questions[index].field;
-
-      if (scores[field] !== undefined) {
-        scores[field] += Number(answer || 0);
-      }
-
-    });
-
-    return scores;
+  const interestScores = {
+    software: 0,
+    networking: 0,
+    cybersecurity: 0,
+    ai: 0,
+    database: 0
   };
 
-  const combineScores = (interest, grades) => {
+  const gradeScores = {
+    software: [],
+    networking: [],
+    cybersecurity: [],
+    ai: [],
+    database: []
+  };
 
-    let finalScores = {};
+  answers.forEach((answer, index) => {
+    const field = questions[index]?.field;
+    if (!field) return;
 
-    for (let field in interest) {
-      finalScores[field] =
-        (interest[field] * 0.8) +
-        (grades[field] * 0.2);
+    const value =
+      gradeMap[answer] !== undefined ? gradeMap[answer] : Number(answer || 0);
+
+    switch (field) {
+      case "software":
+      case "networking":
+      case "cybersecurity":
+      case "ai":
+      case "database":
+        interestScores[field] += value;
+        break;
+
+      case "programmingGrade":
+        gradeScores.software.push(value);
+        gradeScores.ai.push(value);
+        break;
+
+      case "networkGrade":
+        gradeScores.networking.push(value);
+        break;
+
+      case "securityGrade":
+        gradeScores.cybersecurity.push(value);
+        break;
+
+      case "dbGrade":
+        gradeScores.database.push(value);
+        break;
+
+      default:
+        break;
     }
+  });
 
-    return finalScores;
+  const avg = (arr) =>
+    arr.length ? arr.reduce((a, b) => a + b, 0) / arr.length : 0;
+
+  const avgScores = {
+    software: avg(gradeScores.software),
+    networking: avg(gradeScores.networking),
+    cybersecurity: avg(gradeScores.cybersecurity),
+    ai: avg(gradeScores.ai),
+    database: avg(gradeScores.database)
   };
 
-  const getBestField = (scores) => {
-    let bestField = "";
-    let max = -1;
-
-    for (let f in scores) {
-      if (scores[f] > max) {
-        max = scores[f];
-        bestField = f;
-      }
-    }
-
-    return bestField;
+  const rawScores = {
+    software: interestScores.software * 0.7 + avgScores.software * 0.3,
+    networking: interestScores.networking * 0.7 + avgScores.networking * 0.3,
+    cybersecurity: interestScores.cybersecurity * 0.7 + avgScores.cybersecurity * 0.3,
+    ai: interestScores.ai * 0.7 + avgScores.ai * 0.3,
+    database: interestScores.database * 0.7 + avgScores.database * 0.3
   };
 
-  const fieldNamesEN = {
-    software: "Software Engineering",
-    networking: "Networking",
-    cybersecurity: "Cybersecurity",
-    ai: "Artificial Intelligence",
-    database: "Database Systems"
+  const total = Object.values(rawScores).reduce((a, b) => a + b, 0);
+
+  const finalScores = Object.keys(rawScores).reduce((acc, key) => {
+    const percent = total ? (rawScores[key] / total) * 100 : 0;
+
+    // بدون 100%
+    acc[key] = Math.min(Math.round(percent * 0.9), 85);
+
+    return acc;
+  }, {});
+
+  const bestField = Object.keys(finalScores).reduce((a, b) =>
+    finalScores[a] > finalScores[b] ? a : b
+  );
+
+  const fieldNames = {
+    software: lang === "en" ? "Software Engineering" : "هندسة البرمجيات",
+    networking: lang === "en" ? "Networking" : "الشبكات",
+    cybersecurity: lang === "en" ? "Cybersecurity" : "الأمن السيبراني",
+    ai: lang === "en" ? "AI" : "الذكاء الاصطناعي",
+    database: lang === "en" ? "Database" : "قواعد البيانات"
   };
 
-  const fieldNamesAR = {
-    software: "هندسة البرمجيات",
-    networking: "الشبكات",
-    cybersecurity: "الأمن السيبراني",
-    ai: "الذكاء الاصطناعي",
-    database: "قواعد البيانات"
-  };
-
-  const texts = {
-    en: {
-      title: "Your Ideal Major",
-      desc: "Based on your interests and academic performance",
-      retake: "Retake Quiz",
-      save: "Save Result",
-      info: "This field is the most suitable for you",
-      top: "Top Recommended Majors"
-    },
-    ar: {
-      title: "التخصص المناسب لك",
-      desc: "بناءً على اهتماماتك وأدائك الأكاديمي",
-      retake: "إعادة الاختبار",
-      save: "حفظ النتيجة",
-      info: "هذا التخصص هو الأنسب لك",
-      top: "أفضل التخصصات المقترحة"
-    }
-  };
-
-  const interest = calculateInterest(answers, questions);
-  const finalScores = combineScores(interest, grades);
-  const bestField = getBestField(finalScores);
-
-  const fieldNames =
-    lang === "en" ? fieldNamesEN : fieldNamesAR;
-
-  const resultsData = Object.keys(finalScores)
-    .map((field) => ({
-      field,
-      name: fieldNames[field],
-      percentage: Math.round((finalScores[field] / 15) * 100)
+  const top3 = Object.keys(finalScores)
+    .map(key => ({
+      key,
+      name: fieldNames[key],
+      percent: finalScores[key]
     }))
-    .sort((a, b) => b.percentage - a.percentage)
+    .sort((a, b) => b.percent - a.percent)
     .slice(0, 3);
 
   const handleSave = async () => {
     const user = JSON.parse(localStorage.getItem("user"));
+    if (!user || saved) return;
 
-    const percentages = {};
-    resultsData.forEach(item => {
-      percentages[item.field] = item.percentage;
-    });
+    try {
+      await fetch("http://localhost:3001/result", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          name: user.name,
+          email: user.email,
+          bestField,
+          percentages: finalScores
+        })
+      });
 
-    await fetch("http://localhost:3001/result", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-  name: user.name,
-  email: user.email,
-  bestField,
-  percentages
-})
-    });
-
-    alert("Saved!");
+      setSaved(true);
+    } catch (err) {
+      console.log(err);
+    }
   };
 
   return (
     <div className="welcome-page2">
 
-      <div className="navbar2">
+      {/* ================= NAVBAR ================= */}
+      <div className="navbar">
         <div className="logo">Logo</div>
 
-        <div className="nav-links2">
-          <span onClick={() => setPage("welcome")}>Welcome</span>
-          <span onClick={() => setPage("info")}>Info</span>
-          <span onClick={() => setPage("feedback")}>Feedback</span>
-          <span onClick={() => setPage("savedResult")}>My Result</span>
-          <span onClick={changeLang} style={{ color: "orange" }}>
+        <div className="nav-links">
+
+          <span onClick={() => setPage("welcome")}>
+            {lang === "en" ? "Home" : "الرئيسية"}
+          </span>
+
+          <span onClick={() => setPage("info")}>
+            {lang === "en" ? "Info" : "معلومات"}
+          </span>
+
+          <span onClick={() => setPage("feedback")}>
+            {lang === "en" ? "Feedback" : "التعليقات"}
+          </span>
+
+          {user && user.email !== "A@gmail.com" && (
+            <span onClick={() => setPage("savedResult")}>
+              {lang === "en" ? "My Result" : "نتيجتي"}
+            </span>
+          )}
+
+          <span onClick={() => setPage("jobs")}>
+            {lang === "en" ? "Jobs" : "الوظائف"}
+          </span>
+
+          <span
+            onClick={changeLang}
+            style={{ cursor: "pointer", color: "orange" }}
+          >
             {lang === "en" ? "AR" : "EN"}
           </span>
+
         </div>
       </div>
 
+      {/* ================= CONTENT ================= */}
       <div className="login-container">
 
-        <h2>{texts[lang].title}</h2>
+        <h2>
+          {lang === "en" ? "Your Result" : "نتيجتك"}
+        </h2>
 
         <h1 style={{ color: "orange" }}>
           {fieldNames[bestField]}
         </h1>
 
-        <p>{texts[lang].desc}</p>
-
-        <p style={{ fontWeight: "bold" }}>
-          {texts[lang].info}
-        </p>
-
+        {/* TOP 3 */}
         <div style={{ marginTop: "20px" }}>
-          <h3>{texts[lang].top}</h3>
-
-          {resultsData.map((item, i) => (
-            <div key={i}>
-              {item.name}: {item.percentage}%
-            </div>
+          {top3.map((item) => (
+            <p key={item.key}>
+              {item.name}: {item.percent}%
+            </p>
           ))}
         </div>
 
-        {/* 🔥 الأزرار القديمة كما كانت */}
-        <div className="buttons">
+        {/* ================= BUTTONS ================= */}
+<div className="buttons">
 
-          <button
-            className="blue-btn"
-            onClick={() => setPage("quiz")}
-          >
-            {texts[lang].retake}
-          </button>
+  <button
+    className="blue-btn"
+    onClick={handleSave}
+    disabled={saved}
+  >
+    {saved
+      ? lang === "en"
+        ? "Saved"
+        : "تم الحفظ"
+      : lang === "en"
+      ? "Save Result"
+      : "حفظ النتيجة"}
+  </button>
 
-          <button
-            className="orange-btn"
-            onClick={handleSave}
-          >
-            {texts[lang].save}
-          </button>
+  <button
+    className="orange-btn"
+    onClick={() => setPage("welcome")}
+  >
+    {lang === "en" ? "Home" : "الرئيسية"}
+  </button>
 
-        </div>
+</div>
 
       </div>
     </div>

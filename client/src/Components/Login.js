@@ -84,7 +84,7 @@ function Login({ setPage, lang = "en", changeLang }) {
 
       {/* Navbar */}
       <div className="navbar2">
-        <div className="logo">Logo</div>
+        <div className="logo"></div>
 
         <div className="nav-links2">
 

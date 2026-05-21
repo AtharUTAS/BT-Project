@@ -134,37 +134,26 @@ app.get("/feedback", async (req, res) => {
 //============result data===================
 app.post("/result", async (req, res) => {
   try {
+
     const { name, email, bestField, percentages } = req.body;
 
     const result = await ResultModel.findOneAndUpdate(
-      { email }, // 👈 نفس الحساب
-      {
-        name,
-        email,
-        bestField,
-        percentages
-      },
-      {
-        new: true,
-        upsert: true // 👈 إذا ما موجود ينشئه، إذا موجود يحدثه
-      }
+      { email },
+      { name, email, bestField, percentages },
+      { new: true, upsert: true }
     );
 
-    res.send({ msg: "Result saved/updated successfully", result });
+    res.json({ msg: "Saved successfully", result });
 
   } catch (err) {
-    res.status(500).send({ msg: "Error saving result" });
+    res.status(500).json({ msg: "Error saving result" });
   }
 });
 
 
 app.get("/result/:email", async (req, res) => {
-
-  const result = await ResultModel
-    .findOne({ email: req.params.email })
-    .sort({ createdAt: -1 });
-
-  res.send(result);
+  const result = await ResultModel.findOne({ email: req.params.email });
+  res.json(result);
 });
 
 app.get("/all-results", async (req, res) => {

@@ -51,7 +51,7 @@ const isAdminViewer = user?.email === "A@gmail.com";
 
       {/* NAVBAR */}
       <div className="navbar">
-        <div className="logo">Logo</div>
+        <div className="logo"></div>
 
         <div className="nav-links">
           <span onClick={() => setPage("info")}>
@@ -92,23 +92,23 @@ const isAdminViewer = user?.email === "A@gmail.com";
 
         <div className="buttons">
 
-  {!user && (
-    <>
-      <button
+        {!user && (
+       <>
+       <button
         className="orange-btn"
         onClick={() => setPage("signup")}
-      >
+       >
         {texts[lang].create}
-      </button>
+       </button>
 
-      <button
+       <button
         className="blue-btn"
         onClick={() => setPage("login")}
-      >
+       >
         {texts[lang].login}
-      </button>
-    </>
-  )}
+       </button>
+        </>
+       )}
 
   {user && !isAdminViewer && (
     <>
