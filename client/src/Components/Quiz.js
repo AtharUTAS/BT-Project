@@ -1,7 +1,22 @@
 import React, { useState } from "react";
 import "../App.css";
 
-function Quiz({ setPage, lang }) {
+function Quiz({ setPage, lang, changeLang }) {
+
+  const user = JSON.parse(localStorage.getItem("user"));
+
+  const handleFeedbackClick = () => {
+    if (user) {
+      setPage("feedback");
+    } else {
+      alert(
+        lang === "en"
+          ? "⚠️ You must login first"
+          : "⚠️ يجب تسجيل الدخول أولاً"
+      );
+      setPage("login");
+    }
+  };
 
   const questionsEN = [
     { text: "How interested are you in programming and software development?", field: "software" },
@@ -26,14 +41,11 @@ function Quiz({ setPage, lang }) {
     { text: "What was your grade in Mathematics courses?", field: "mathGrade", type: "grade" },
     { text: "What was your grade in Programming courses?", field: "programmingGrade", type: "grade" },
     { text: "What was your grade in Data Structures / Algorithms?", field: "algorithmGrade", type: "grade" },
-
     { text: "What was your grade in Web Development courses?", field: "webGrade", type: "grade" },
     { text: "What was your grade in Software Design or Projects?", field: "softwareGrade", type: "grade" },
-
     { text: "What was your grade in Networking courses?", field: "networkGrade", type: "grade" },
     { text: "What was your grade in Operating Systems?", field: "osGrade", type: "grade" },
     { text: "What was your grade in Security-related courses?", field: "securityGrade", type: "grade" },
-
     { text: "What was your grade in Computer Architecture?", field: "hardwareGrade", type: "grade" },
     { text: "What was your grade in Database courses?", field: "dbGrade", type: "grade" },
     { text: "What was your grade in Systems Analysis courses?", field: "analysisGrade", type: "grade" }
@@ -42,37 +54,34 @@ function Quiz({ setPage, lang }) {
   const questionsAR = [
     { text: "ما مدى اهتمامك بالبرمجة وتطوير البرمجيات؟", field: "software" },
     { text: "ما مدى اهتمامك بشبكات الحاسوب؟", field: "networking" },
-    { text: "ما مدى اهتمامك بالأمن السيبراني والاختراق الأخلاقي؟", field: "cybersecurity" },
-    { text: "ما مدى اهتمامك بالذكاء الاصطناعي وتعلم الآلة؟", field: "ai" },
-    { text: "ما مدى اهتمامك بقواعد البيانات ونظم المعلومات؟", field: "database" },
+    { text: "ما مدى اهتمامك بالأمن السيبراني؟", field: "cybersecurity" },
+    { text: "ما مدى اهتمامك بالذكاء الاصطناعي؟", field: "ai" },
+    { text: "ما مدى اهتمامك بقواعد البيانات؟", field: "database" },
 
-    { text: "ما مدى اهتمامك بتحليل البيانات؟", field: "dataAnalysis" },
-    { text: "ما مدى اهتمامك بحل المشكلات المنطقية؟", field: "logic" },
-    { text: "ما مدى اهتمامك بالأجهزة ومكونات الحاسوب؟", field: "hardware" },
-    { text: "ما مدى اهتمامك بحماية الأنظمة من الهجمات؟", field: "security" },
-    { text: "ما مدى ارتياحك للعمل الجماعي؟", field: "teamwork" },
-    { text: "قيّم مهاراتك في التواصل والعرض", field: "communication" },
-    { text: "ما مدى اهتمامك بتطوير تطبيقات الهاتف؟", field: "mobile" },
-    { text: "ما مدى اهتمامك بتطوير تطبيقات الويب؟", field: "web" },
-    { text: "ما مدى اهتمامك بالبحث عن التقنيات الجديدة؟", field: "research" },
-    { text: "ما مدى اهتمامك بإدارة المشاريع؟", field: "management" },
-    { text: "ما مدى اهتمامك بتصميم واجهات المستخدم؟", field: "uiux" },
-    { text: "ما مدى اهتمامك بالسحابة والخوادم؟", field: "cloud" },
+    { text: "ما مدى اهتمامك بالبيانات؟", field: "dataAnalysis" },
+    { text: "ما مدى اهتمامك بالمنطق؟", field: "logic" },
+    { text: "ما مدى اهتمامك بالأجهزة؟", field: "hardware" },
+    { text: "ما مدى اهتمامك بالحماية؟", field: "security" },
+    { text: "العمل الجماعي؟", field: "teamwork" },
+    { text: "التواصل؟", field: "communication" },
+    { text: "تطبيقات الجوال؟", field: "mobile" },
+    { text: "الويب؟", field: "web" },
+    { text: "البحث؟", field: "research" },
+    { text: "إدارة المشاريع؟", field: "management" },
+    { text: "UI/UX؟", field: "uiux" },
+    { text: "السحابة؟", field: "cloud" },
 
-    { text: "ما كانت درجتك في الرياضيات؟", field: "mathGrade", type: "grade" },
-    { text: "ما كانت درجتك في البرمجة؟", field: "programmingGrade", type: "grade" },
-    { text: "ما كانت درجتك في الخوارزميات وهياكل البيانات؟", field: "algorithmGrade", type: "grade" },
-
-    { text: "ما كانت درجتك في تطوير الويب؟", field: "webGrade", type: "grade" },
-    { text: "ما كانت درجتك في تصميم البرمجيات؟", field: "softwareGrade", type: "grade" },
-
-    { text: "ما كانت درجتك في الشبكات؟", field: "networkGrade", type: "grade" },
-    { text: "ما كانت درجتك في نظم التشغيل؟", field: "osGrade", type: "grade" },
-    { text: "ما كانت درجتك في الأمن السيبراني؟", field: "securityGrade", type: "grade" },
-
-    { text: "ما كانت درجتك في معمارية الحاسوب؟", field: "hardwareGrade", type: "grade" },
-    { text: "ما كانت درجتك في قواعد البيانات؟", field: "dbGrade", type: "grade" },
-    { text: "ما كانت درجتك في تحليل النظم؟", field: "analysisGrade", type: "grade" }
+    { text: "الرياضيات؟", field: "mathGrade", type: "grade" },
+    { text: "البرمجة؟", field: "programmingGrade", type: "grade" },
+    { text: "الخوارزميات؟", field: "algorithmGrade", type: "grade" },
+    { text: "الويب؟", field: "webGrade", type: "grade" },
+    { text: "تصميم البرمجيات؟", field: "softwareGrade", type: "grade" },
+    { text: "الشبكات؟", field: "networkGrade", type: "grade" },
+    { text: "أنظمة التشغيل؟", field: "osGrade", type: "grade" },
+    { text: "الأمن؟", field: "securityGrade", type: "grade" },
+    { text: "المعمارية؟", field: "hardwareGrade", type: "grade" },
+    { text: "قواعد البيانات؟", field: "dbGrade", type: "grade" },
+    { text: "تحليل النظم؟", field: "analysisGrade", type: "grade" }
   ];
 
   const questions = lang === "en" ? questionsEN : questionsAR;
@@ -103,7 +112,44 @@ function Quiz({ setPage, lang }) {
 
   return (
     <div className="welcome-page2">
-      
+
+      {/* NAVBAR */}
+      <div className="navbar">
+        <div className="logo"></div>
+
+        <div className="nav-links">
+
+          <span onClick={() => setPage("welcome")}>
+            {lang === "en" ? "Home" : "الرئيسية"}
+          </span>
+
+          <span onClick={() => setPage("info")}>
+            {lang === "en" ? "Info" : "معلومات"}
+          </span>
+
+          <span onClick={handleFeedbackClick}>
+            {lang === "en" ? "Feedback" : "التعليقات"}
+          </span>
+
+          {user && user.email !== "A@gmail.com" && (
+            <span onClick={() => setPage("savedResult")}>
+              {lang === "en" ? "My Result" : "نتيجتي"}
+            </span>
+          )}
+
+          <span onClick={() => setPage("jobs")}>
+            {lang === "en" ? "Jobs" : "الوظائف"}
+          </span>
+
+          <span
+            onClick={changeLang}
+            style={{ cursor: "pointer", marginLeft: "10px", marginRight: "100px" }}
+          >
+            {lang === "en" ? "AR" : "EN"}
+          </span>
+
+        </div>
+      </div>
 
       {/* QUIZ */}
       <div className="quiz-container">
@@ -114,32 +160,30 @@ function Quiz({ setPage, lang }) {
 
         <p>{questions[currentQuestion].text}</p>
 
+        {/* 🔥 هذا هو التوضيح الذي طلبته */}
+        {questions[currentQuestion].type !== "grade" && (
+          <p className="scale-info">
+            {lang === "en"
+              ? "1 = Lowest / Not interested, 5 = Highest / Very interested"
+              : "5 =    الأقل/ لست مهتم= 1 ، الأعلى/ مهتم جدا"}
+          </p>
+        )}
+
         <div className="quiz-options">
-
-          {questions[currentQuestion].type === "grade"
-            ? gradeOptions.map(opt => (
-                <div
-                  key={opt}
-                  className={`option ${selected === opt ? "selected" : ""}`}
-                  onClick={() => setSelected(opt)}
-                >
-                  {opt}
-                </div>
-              ))
-            : [1, 2, 3, 4, 5].map(opt => (
-                <div
-                  key={opt}
-                  className={`option ${selected === opt ? "selected" : ""}`}
-                  onClick={() => setSelected(opt)}
-                >
-                  {opt}
-                </div>
-              ))
-          }
-
+          {(questions[currentQuestion].type === "grade"
+            ? gradeOptions
+            : [1, 2, 3, 4, 5]
+          ).map(opt => (
+            <div
+              key={opt}
+              className={`option ${selected === opt ? "selected" : ""}`}
+              onClick={() => setSelected(opt)}
+            >
+              {opt}
+            </div>
+          ))}
         </div>
 
-        {/* 🔥 RESTORED BUTTON STRUCTURE (this fixes your design) */}
         <div className="buttons">
           <button
             className="blue-btn"

@@ -81,7 +81,7 @@ function Signup({ setPage, lang = "en", changeLang }) {
 
       {/* NAVBAR */}
       <div className="navbar2">
-        <div className="logo">Logo</div>
+        <div className="logo"></div>
 
         <div className="nav-links2">
 

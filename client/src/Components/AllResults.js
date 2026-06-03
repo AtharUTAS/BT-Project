@@ -46,7 +46,7 @@ function AllResults({ setPage, lang, changeLang }) {
     <div className="welcome-page2">
 
       <div className="navbar2">
-        <div className="logo">Logo</div>
+        <div className="logo"></div>
 
         <div className="nav-links2">
 
