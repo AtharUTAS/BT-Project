@@ -2,7 +2,7 @@ import mongoose from "mongoose";
 
 const FeedbackSchema = mongoose.Schema({
   message: { type: String, required: true },
-  email: { type: String }, // اختياري (لو المستخدم مسجل دخول)
+  email: { type: String }, 
   createdAt: { type: Date, default: Date.now }
 });
 

@@ -10,8 +10,8 @@ const isAdminViewer = user?.email === "A@gmail.com";
       setPage("feedback");
     } else {
       alert(lang === "en"
-        ? "⚠️ You must login first to access Feedback"
-        : "⚠️ يجب تسجيل الدخول أولاً للوصول إلى التعليقات"
+        ? " You must login first to access Feedback"
+        : " يجب تسجيل الدخول أولاً للوصول إلى التعليقات"
       );
       setPage("login");
     }
@@ -72,7 +72,7 @@ const isAdminViewer = user?.email === "A@gmail.com";
             {lang === "en" ? "Jobs" : "الوظائف"}
           </span>
 
-          {/* 🌍 زر اللغة (فقط هذا التعديل) */}
+          
           <span
             onClick={changeLang}
             style={{ cursor: "pointer", marginLeft: "10px", marginRight:"100px" }}

@@ -93,8 +93,8 @@ function Feedback({ setPage, lang = "en", changeLang }) {
       if (res.ok) {
         alert(
           lang === "en"
-            ? "Feedback sent successfully ✅"
-            : "تم إرسال التعليق بنجاح ✅"
+            ? "Feedback sent successfully "
+            : "تم إرسال التعليق بنجاح "
         );
         setMessage("");
 

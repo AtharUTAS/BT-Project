@@ -3,7 +3,7 @@ import React, { useState } from "react";
 function Result({ setPage, answers, questions, lang, changeLang }) {
   const [saved, setSaved] = useState(false);
 
-  const user = JSON.parse(localStorage.getItem("user"));
+  const user = JSON.parse(localStorage.getItem("user") || "null");
 
   const gradeMap = {
     A: 5,
@@ -14,20 +14,20 @@ function Result({ setPage, answers, questions, lang, changeLang }) {
     F: 0
   };
 
-  const scores = {
-    software: { interest: [], grade: [] },
-    networking: { interest: [], grade: [] },
-    cybersecurity: { interest: [], grade: [] },
-    ai: { interest: [], grade: [] },
-    database: { interest: [], grade: [] }
+  const interestScores = {
+    software: 0,
+    networking: 0,
+    cybersecurity: 0,
+    ai: 0,
+    database: 0
   };
 
-  const addInterest = (field, value, weight = 1) => {
-    scores[field].interest.push(value * weight);
-  };
-
-  const addGrade = (field, value, weight = 1) => {
-    scores[field].grade.push(value * weight);
+  const gradeScores = {
+    software: [],
+    networking: [],
+    cybersecurity: [],
+    ai: [],
+    database: []
   };
 
   answers.forEach((answer, index) => {
@@ -39,150 +39,28 @@ function Result({ setPage, answers, questions, lang, changeLang }) {
 
     switch (field) {
       case "software":
-        addInterest("software", value, 1);
-        break;
-
       case "networking":
-        addInterest("networking", value, 1);
-        addInterest("cybersecurity", value, 0.4);
-        break;
-
       case "cybersecurity":
-        addInterest("cybersecurity", value, 1);
-        addInterest("networking", value, 0.3);
-        break;
-
       case "ai":
-        addInterest("ai", value, 1);
-        addInterest("software", value, 0.3);
-        break;
-
       case "database":
-        addInterest("database", value, 1);
-        addInterest("ai", value, 0.4);
-        addInterest("software", value, 0.3);
-        break;
-
-      case "dataAnalysis":
-        addInterest("ai", value, 1);
-        addInterest("database", value, 0.8);
-        break;
-
-      case "logic":
-        addInterest("software", value, 0.8);
-        addInterest("ai", value, 0.8);
-        addInterest("cybersecurity", value, 0.4);
-        break;
-
-      case "hardware":
-        addInterest("networking", value, 0.8);
-        addInterest("cybersecurity", value, 0.4);
-        break;
-
-      case "security":
-        addInterest("cybersecurity", value, 1);
-        addInterest("networking", value, 0.4);
-        break;
-
-      case "teamwork":
-        addInterest("database", value, 0.6);
-        addInterest("software", value, 0.5);
-        break;
-
-      case "communication":
-        addInterest("database", value, 0.7);
-        addInterest("software", value, 0.4);
-        break;
-
-      case "mobile":
-        addInterest("software", value, 1);
-        break;
-
-      case "web":
-        addInterest("software", value, 1);
-        addInterest("database", value, 0.5);
-        addInterest("cybersecurity", value, 0.3);
-        break;
-
-      case "research":
-        addInterest("ai", value, 0.8);
-        addInterest("cybersecurity", value, 0.5);
-        addInterest("software", value, 0.4);
-        break;
-
-      case "management":
-        addInterest("database", value, 0.8);
-        addInterest("software", value, 0.4);
-        break;
-
-      case "uiux":
-        addInterest("software", value, 0.7);
-        addInterest("database", value, 0.7);
-        break;
-
-      case "cloud":
-        addInterest("networking", value, 0.8);
-        addInterest("cybersecurity", value, 0.6);
-        addInterest("ai", value, 0.3);
-        break;
-
-      case "mathGrade":
-        addGrade("ai", value, 1);
-        addGrade("software", value, 0.4);
+        interestScores[field] += value;
         break;
 
       case "programmingGrade":
-        addGrade("software", value, 1);
-        addGrade("ai", value, 0.8);
-        addGrade("database", value, 0.4);
-        break;
-
-      case "algorithmGrade":
-        addGrade("software", value, 0.9);
-        addGrade("ai", value, 1);
-        break;
-
-      case "webGrade":
-        addGrade("software", value, 1);
-        addGrade("database", value, 0.6);
-        addGrade("cybersecurity", value, 0.3);
-        break;
-
-      case "softwareGrade":
-        addGrade("software", value, 1);
-        addGrade("database", value, 0.5);
+        gradeScores.software.push(value);
+        gradeScores.ai.push(value);
         break;
 
       case "networkGrade":
-        addGrade("networking", value, 1);
-        addGrade("cybersecurity", value, 0.6);
-        break;
-
-      case "osGrade":
-        addGrade("networking", value, 0.8);
-        addGrade("cybersecurity", value, 0.7);
-        addGrade("software", value, 0.4);
+        gradeScores.networking.push(value);
         break;
 
       case "securityGrade":
-        addGrade("cybersecurity", value, 1);
-        addGrade("networking", value, 0.4);
-        break;
-
-      case "hardwareGrade":
-        addGrade("networking", value, 1);
-        addGrade("cybersecurity", value, 0.3);
+        gradeScores.cybersecurity.push(value);
         break;
 
       case "dbGrade":
-        addGrade("database", value, 1);
-        addGrade("ai", value, 0.5);
-        addGrade("software", value, 0.4);
-        break;
-
-      case "analysisGrade":
-        addGrade("database", value, 1);
-        addGrade("software", value, 0.5);
+        gradeScores.database.push(value);
         break;
 
       default:
@@ -193,17 +71,28 @@ function Result({ setPage, answers, questions, lang, changeLang }) {
   const avg = (arr) =>
     arr.length ? arr.reduce((a, b) => a + b, 0) / arr.length : 0;
 
-  const rawScores = {};
+  const avgScores = {
+    software: avg(gradeScores.software),
+    networking: avg(gradeScores.networking),
+    cybersecurity: avg(gradeScores.cybersecurity),
+    ai: avg(gradeScores.ai),
+    database: avg(gradeScores.database)
+  };
 
-  Object.keys(scores).forEach((key) => {
-    const interestScore = avg(scores[key].interest);
-    const gradeScore = avg(scores[key].grade);
+  const rawScores = {
+    software: interestScores.software * 0.7 + avgScores.software * 0.3,
+    networking: interestScores.networking * 0.7 + avgScores.networking * 0.3,
+    cybersecurity:
+      interestScores.cybersecurity * 0.7 + avgScores.cybersecurity * 0.3,
+    ai: interestScores.ai * 0.7 + avgScores.ai * 0.3,
+    database: interestScores.database * 0.7 + avgScores.database * 0.3
+  };
 
-    rawScores[key] = interestScore * 0.7 + gradeScore * 0.3;
-  });
+  const total = Object.values(rawScores).reduce((a, b) => a + b, 0);
 
   const finalScores = Object.keys(rawScores).reduce((acc, key) => {
-    acc[key] = Math.round((rawScores[key] / 5) * 100);
+    const percent = total ? (rawScores[key] / total) * 100 : 0;
+    acc[key] = Math.min(Math.round(percent * 0.9), 100);
     return acc;
   }, {});
 
@@ -216,11 +105,33 @@ function Result({ setPage, answers, questions, lang, changeLang }) {
     networking: lang === "en" ? "Networking" : "الشبكات",
     cybersecurity: lang === "en" ? "Cybersecurity" : "الأمن السيبراني",
     ai: lang === "en" ? "AI" : "الذكاء الاصطناعي",
-    database: lang === "en" ? "Database / Information Systems" : "قواعد البيانات / نظم المعلومات"
+    database: lang === "en" ? "Database" : "قواعد البيانات"
   };
 
+  //  WARNING SYSTEM (C = 3 is pass)
+  const bestFieldGrade = avgScores[bestField];
+
+  let warningMessage = "";
+
+  if (bestFieldGrade < 3) {
+    warningMessage =
+      lang === "en"
+        ? "⚠️ Warning: Your grades are below the passing level (C). This specialization may be difficult for you."
+        : "⚠️ تحذير: درجاتك أقل من مستوى النجاح (C). قد يكون هذا التخصص صعباً عليك.";
+  } else if (bestFieldGrade === 3) {
+    warningMessage =
+      lang === "en"
+        ? "Your grades are at the minimum passing level (C). Improvement is recommended."
+        : "درجاتك عند الحد الأدنى للنجاح (C). يُنصح بتحسين مستواك.";
+  } else {
+    warningMessage =
+      lang === "en"
+        ? "Your grades are suitable for this specialization."
+        : "درجاتك مناسبة لهذا التخصص.";
+  }
+
   const top3 = Object.keys(finalScores)
-    .map(key => ({
+    .map((key) => ({
       key,
       name: fieldNames[key],
       percent: finalScores[key]
@@ -229,7 +140,7 @@ function Result({ setPage, answers, questions, lang, changeLang }) {
     .slice(0, 3);
 
   const handleSave = async () => {
-    const user = JSON.parse(localStorage.getItem("user"));
+    const user = JSON.parse(localStorage.getItem("user") || "null");
     if (!user || saved) return;
 
     try {
@@ -252,12 +163,10 @@ function Result({ setPage, answers, questions, lang, changeLang }) {
 
   return (
     <div className="welcome-page2">
-
       <div className="navbar">
-        <div className="logo">Logo</div>
+        <div className="logo"></div>
 
         <div className="nav-links">
-
           <span onClick={() => setPage("welcome")}>
             {lang === "en" ? "Home" : "الرئيسية"}
           </span>
@@ -280,27 +189,35 @@ function Result({ setPage, answers, questions, lang, changeLang }) {
             {lang === "en" ? "Jobs" : "الوظائف"}
           </span>
 
-          <span
-            onClick={changeLang}
-            style={{ cursor: "pointer", color: "orange" }}
-          >
+          <span onClick={changeLang} style={{ color: "orange" }}>
             {lang === "en" ? "AR" : "EN"}
           </span>
-
         </div>
       </div>
 
       <div className="login-container">
+        <h2>{lang === "en" ? "Your Result" : "نتيجتك"}</h2>
 
-        <h2>
-          {lang === "en" ? "Your Result" : "نتيجتك"}
-        </h2>
+        <h1 style={{ color: "orange" }}>{fieldNames[bestField]}</h1>
 
-        <h1 style={{ color: "orange" }}>
-          {fieldNames[bestField]}
-        </h1>
+        {/* WARNING */}
+        <div
+          style={{
+            marginTop: "15px",
+            padding: "12px",
+            borderRadius: "10px",
+            backgroundColor: bestFieldGrade < 3 ? "#ffe5e5" : "#e8f5e9",
+            color: bestFieldGrade < 3 ? "#c62828" : "#2e7d32",
+            fontWeight: "bold"
+          }}
+        >
+          {warningMessage}
+        </div>
 
+        {/* TOP 3 */}
         <div style={{ marginTop: "20px" }}>
+          <h3>{lang === "en" ? "Top 3 Recommendations" : "أفضل 3 توصيات"}</h3>
+
           {top3.map((item) => (
             <p key={item.key}>
               {item.name}: {item.percent}%
@@ -308,31 +225,16 @@ function Result({ setPage, answers, questions, lang, changeLang }) {
           ))}
         </div>
 
+        {/* BUTTONS */}
         <div className="buttons">
-
-          <button
-            className="blue-btn"
-            onClick={handleSave}
-            disabled={saved}
-          >
-            {saved
-              ? lang === "en"
-                ? "Saved"
-                : "تم الحفظ"
-              : lang === "en"
-              ? "Save Result"
-              : "حفظ النتيجة"}
+          <button className="blue-btn" onClick={handleSave} disabled={saved}>
+            {saved ? (lang === "en" ? "Saved" : "تم الحفظ") : (lang === "en" ? "Save Result" : "حفظ النتيجة")}
           </button>
 
-          <button
-            className="orange-btn"
-            onClick={() => setPage("welcome")}
-          >
+          <button className="orange-btn" onClick={() => setPage("welcome")}>
             {lang === "en" ? "Home" : "الرئيسية"}
           </button>
-
         </div>
-
       </div>
     </div>
   );

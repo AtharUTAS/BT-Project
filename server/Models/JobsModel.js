@@ -5,7 +5,7 @@ app.get("/jobs", async (req, res) => {
   try {
     let jobs = await JobsModel.findOne();
 
-    // إذا ما فيه بيانات، أنشئ default
+    
     if (!jobs) {
       jobs = await JobsModel.create({
         software: [],

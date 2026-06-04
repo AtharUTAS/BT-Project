@@ -11,8 +11,8 @@ function Quiz({ setPage, lang, changeLang }) {
     } else {
       alert(
         lang === "en"
-          ? "⚠️ You must login first"
-          : "⚠️ يجب تسجيل الدخول أولاً"
+          ? " You must login first"
+          : " يجب تسجيل الدخول أولاً"
       );
       setPage("login");
     }
@@ -160,7 +160,7 @@ function Quiz({ setPage, lang, changeLang }) {
 
         <p>{questions[currentQuestion].text}</p>
 
-        {/* 🔥 هذا هو التوضيح الذي طلبته */}
+       
         {questions[currentQuestion].type !== "grade" && (
           <p className="scale-info">
             {lang === "en"

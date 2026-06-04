@@ -73,7 +73,7 @@ const handleSubmit = async () => {
       },
       body: JSON.stringify({
         message,
-        email: "test@email.com" // لاحقًا تجيبها من المستخدم
+        email: "test@email.com" 
       }),
     });
 
@@ -181,7 +181,7 @@ app.put("/jobs", async (req, res) => {
     const updated = await JobsModel.findOneAndUpdate(
       { email },
       { jobs: data },
-      { new: true, upsert: true } // ⭐ أهم جزء
+      { new: true, upsert: true } 
     );
 
     res.send({ msg: "Jobs saved successfully", updated });
